@@ -1,0 +1,18 @@
+# Python virtual environment sandbox
+.venv/
+venv/
+ENV/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local MLflow tracking files (keep the code, ignore the massive local data logs)
+.mlcounts/
+outputs/
+
+# Operating system files
+.DS_Store
+Thumbs.db
