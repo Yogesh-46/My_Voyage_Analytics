@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voyage-flight-api-deployment
+  labels:
+    app: voyage-flight-api
+spec:
+  replicas: 3 # Tells Kubernetes to always keep 3 identical copies of your AI server running for high traffic
+  selector:
+    matchLabels:
+      app: voyage-flight-api
+  template:
+    metadata:
+      labels:
+        app: voyage-flight-api
+    spec:
+      containers:
+      - name: flight-price-api
+        image: yogeshdubey/voyage-flight-api:v1.0 # The Docker image name for your repository
+        ports:
+        - containerPort: 5001 # Matches the port exposed in our Dockerfile
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: voyage-flight-api-service
+spec:
+  type: NodePort # Exposes the internal Kubernetes network cluster to your external Streamlit app
+  selector:
+    app: voyage-flight-api
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
+      nodePort: 30001 # Your Streamlit app would point to this port to speak to the cluster

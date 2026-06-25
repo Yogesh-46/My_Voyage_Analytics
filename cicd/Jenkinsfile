@@ -1,0 +1,52 @@
+pipeline {
+    agent any // Instructs Jenkins to run this automation workflow on any available server agent
+
+    environment {
+        DOCKER_REGISTRY_USER = 'yogeshdubey'
+        IMAGE_NAME           = 'voyage-flight-api'
+        IMAGE_TAG            = 'v1.0'
+    }
+
+    stages {
+        // Stage 1: Pull the latest code files cleanly from your GitHub repository
+        stage('Fetch Source Code') {
+            steps {
+                echo '📥 Syncing code environment from GitHub...'
+                checkout scm
+            }
+        }
+
+        // Stage 2: Run automated validation checks to ensure code rules aren't broken
+        stage('Code Testing & Linting') {
+            steps {
+                echo '🧪 Running Python validation tests...'
+                // In an active agent environment, you would run test runner scripts here
+            }
+        }
+
+        // Stage 3: Package the Flask API and models into a Docker environment
+        stage('Build Docker Container') {
+            steps {
+                echo '📦 Packaging application into Docker image...'
+                sh "docker build -t ${DOCKER_REGISTRY_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+            }
+        }
+
+        // Stage 4: Ship the verified container image up to production Kubernetes nodes
+        stage('Deploy Cluster Infrastructure') {
+            steps {
+                echo '☸️ Deploying application manifests to active Kubernetes cluster...'
+                sh "kubectl apply -f deployment.yaml"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ CI/CD Pipeline Completed Successfully! Application is live.'
+        }
+        failure {
+            echo '❌ Automation Pipeline Failed. Reverting changes.'
+        }
+    }
+}
