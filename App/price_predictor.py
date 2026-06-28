@@ -48,6 +48,10 @@ with st.sidebar:
     default_to_idx = 1 if len(TO_CITIES) > 1 else 0
     to_city = st.selectbox("Destination Hub (To)", TO_CITIES, index=default_to_idx)
     
+    # 📅 NEW: Interactive Temporal Selection Grid
+    st.markdown("#### **Temporal Matrix**")
+    travel_date = st.date_input("Select Departure Date", value=pd.to_datetime("2022-06-15"))
+    
     st.markdown("#### **Logistics Attributes**")
     agency = st.selectbox("Booking Pipeline Provider", AGENCIES)
     flight_type = st.selectbox("Seat Inventory Tier", FLIGHT_TYPES)
@@ -67,12 +71,27 @@ if run_analysis:
     else:
         res_col1, res_col2, res_col3 = st.columns(3)
         
+        # 📅 Extract Day, Month, and Year directly from the selected date object
+        day_val = travel_date.day
+        month_val = travel_date.month
+        year_val = travel_date.year
+        
         # ----------------------------------------------------
         # COLUMN 1: FLIGHT VALUATION GRAPH CARD
         # ----------------------------------------------------
         with res_col1:
             st.markdown("<div class='report-card'><div class='card-title'>🎚️ Ticket Price Valuation</div></div>", unsafe_allow_html=True)
-            payload_reg = {"from": from_city, "to": to_city, "agency": agency, "flightType": flight_type}
+            
+            # Map parameters alongside our newly parsed calendar metrics
+            payload_reg = {
+                "from": from_city, 
+                "to": to_city, 
+                "agency": agency, 
+                "flightType": flight_type,
+                "day": int(day_val),
+                "month": int(month_val),
+                "year": int(year_val)
+            }
             try:
                 response_reg = requests.post(f"{BASE_URL}/predict", json=payload_reg)
                 if response_reg.status_code == 200:
@@ -90,7 +109,6 @@ if run_analysis:
         with res_col2:
             st.markdown("<div class='report-card'><div class='card-title'>👥 Traveler Segmentation Engine</div></div>", unsafe_allow_html=True)
             
-            # Hidden Background Name Resolution via User ID Input
             if "userCode" in users_df.columns:
                 matched_user = users_df[users_df["userCode"] == user_code]
                 resolved_name = matched_user["name"].values[0] if not matched_user.empty else "Unknown"
