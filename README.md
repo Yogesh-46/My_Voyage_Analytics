@@ -1,40 +1,352 @@
-# ✈️ Voyage Analytics: Intelligent Flight Pricing & MLOps Platform
+# ✈️ Voyage Analytics Intelligence Engine
 
-Voyage Analytics is an enterprise-grade, end-to-end MLOps platform built to predict real-world flight pricing distributions. Utilizing the **Argo Datathon Travel Dataset**, the system features a decoupled microservices architecture, automated model training pipelines, containerized deployment workflows, and robust experiment tracking.
+A production-oriented Machine Learning and MLOps project for the Travel & Tourism domain.
 
----
-
-## 🏛️ System Architecture Overview
-
-The platform is engineered using a decoupled, production-ready microservices layout:
-1. **Frontend UI (Streamlit):** A wide-screen responsive web dashboard providing real-time flight configuration inputs and visual metric displays.
-2. **Backend REST API (Flask):** An independent inference server that serves model predictions over HTTP via structured JSON payloads.
-3. **Machine Learning Engine (XGBoost):** An optimized gradient boosting regressor hitting an **80.23% R² predictive accuracy**.
-4. **MLOps Lifecycle Layer (MLflow, Airflow, Jenkins, Docker, Kubernetes):** Automates tracking, containerization, orchestration, and continuous integration.
+This project predicts flight prices, classifies traveler gender, and recommends hotels using machine learning models exposed through a Flask REST API and visualized with a Streamlit dashboard. The project also demonstrates modern MLOps practices including MLflow, Apache Airflow, Jenkins, Docker, and Kubernetes.
 
 ---
 
-## 🗂️ Repository Directory Structure
+## Business Problem
 
-```text
-my_voyage_analytics/
-├── app/
-│   └── price_predictor.py       # Streamlit Web Application
-├── cicd/
-│   └── Jenkinsfile             # Jenkins Continuous Integration Pipeline Script
-├── dags/
-│   └── flight_retraining_dag.py # Apache Airflow Automated Orchestration Workflow
-├── data/
-│   └── flight_prediction/
-│       ├── flights.csv          # Raw Travel Logs
-│       └── processed_flights.csv# Clean, Feature-Engineered Dataset
-├── model/
-│   └── flight_prediction/       # Serialized Model Artifacts & Encoders (.pkl)
-├── src/
-│   └── flight_prediction/
-│       ├── preprocessing.py     # Target Encoding & Data Cleaning Pipeline
-│       ├── train.py             # XGBoost Model Training & MLflow Logging
-│       └── api.py               # Flask REST API Microservice Engine
-├── Dockerfile                   # Deployment Container Blueprint
-├── deployment.yaml              # Kubernetes Deployment & Service Manifests
-└── requirements.txt             # Production Library Dependencies Shopping List
+Travel companies manage large volumes of customer, flight, and hotel data. This project demonstrates how machine learning can improve travel decision-making by providing:
+
+- Flight price prediction
+- Traveler gender classification
+- Personalized hotel recommendations
+
+The project also focuses on deploying and managing ML models using production-oriented MLOps practices.
+
+---
+
+# Features
+
+✅ Flight Price Prediction (Regression)
+
+- XGBoost Regression Model
+- REST API using Flask
+- Real-time predictions
+
+---
+
+✅ Gender Classification
+
+- Random Forest Classifier
+- Company, Age and Name-based feature engineering
+- Improved model accuracy through feature engineering
+
+---
+
+✅ Hotel Recommendation
+
+- Collaborative Filtering
+- Personalized hotel suggestions
+- Popularity fallback for new users
+
+---
+
+✅ Streamlit Dashboard
+
+Interactive dashboard supporting:
+
+- Flight Price Prediction
+- Gender Classification
+- Hotel Recommendation
+
+---
+
+✅ MLOps Components
+
+- Flask REST API
+- MLflow Experiment Tracking
+- Apache Airflow DAGs
+- Jenkins CI/CD
+- Docker Containerization
+- Kubernetes Deployment
+
+---
+
+# System Architecture
+
+```
+                    Streamlit Dashboard
+                           │
+                           ▼
+                    Flask REST API
+          ┌───────────┬────────────┬────────────┐
+          ▼           ▼            ▼
+     Regression   Classification  Recommendation
+          │           │            │
+          └───────────┴────────────┘
+                     ML Models
+                         │
+                     MLflow Tracking
+                         │
+         Docker → Kubernetes Deployment
+                         │
+                  Jenkins CI/CD Pipeline
+                         │
+                Apache Airflow Workflows
+```
+
+---
+
+# Dataset
+
+The project uses three datasets.
+
+### Users
+
+- User ID
+- Name
+- Company
+- Gender
+- Age
+
+### Flights
+
+- Flight Route
+- Agency
+- Flight Type
+- Price
+- Distance
+- Time
+
+### Hotels
+
+- Hotel Name
+- Destination
+- Price
+- Stay Duration
+
+---
+
+# Machine Learning Models
+
+## Flight Price Prediction
+
+Algorithm
+
+- XGBoost Regressor
+
+Features
+
+- Origin
+- Destination
+- Agency
+- Flight Type
+
+Output
+
+- Predicted Flight Price
+
+---
+
+## Gender Classification
+
+Algorithm
+
+- Random Forest
+
+Features
+
+- Age
+- Company
+- First Name (Feature Engineered)
+
+Output
+
+- Male / Female
+
+---
+
+## Hotel Recommendation
+
+Algorithm
+
+- Collaborative Filtering
+
+Output
+
+- Top Recommended Hotels
+
+---
+
+# REST API
+
+## Flight Prediction
+
+POST
+
+```
+/predict
+```
+
+Example Request
+
+```json
+{
+    "from":"Sao Paulo (SP)",
+    "to":"Rio de Janeiro (RJ)",
+    "agency":"CloudFy",
+    "flightType":"economic"
+}
+```
+
+---
+
+## Gender Classification
+
+POST
+
+```
+/classify_user
+```
+
+Example Request
+
+```json
+{
+    "age":25,
+    "company":"4You",
+    "name":"Roy Braun"
+}
+```
+
+---
+
+## Hotel Recommendation
+
+POST
+
+```
+/recommend_hotels
+```
+
+Example Request
+
+```json
+{
+    "userCode":15,
+    "destination_city":"Rio de Janeiro (RJ)"
+}
+```
+
+---
+
+# Project Structure
+
+```
+App/
+│
+├── price_predictor.py
+
+Data/
+│
+├── Flight_Prediction/
+├── Users/
+├── Hotels/
+
+Model/
+│
+├── flight_prediction/
+├── flight_classification/
+├── hotel_recommendation/
+
+Src/
+│
+├── Flight_Prediction/
+├── flight_classification/
+├── hotel_recommendation/
+
+dags/
+
+cicd/
+
+Dockerfile
+
+deployment.yaml
+
+requirements.txt
+
+README.md
+```
+
+---
+
+# Technology Stack
+
+- Python
+- Pandas
+- NumPy
+- Scikit-Learn
+- XGBoost
+- Flask
+- Streamlit
+- MLflow
+- Apache Airflow
+- Docker
+- Kubernetes
+- Jenkins
+
+---
+
+# Running the Project
+
+Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+Run Flask API
+
+```bash
+python Src/Flight_Prediction/api.py
+```
+
+Run Streamlit Dashboard
+
+```bash
+streamlit run App/price_predictor.py
+```
+
+---
+
+# Docker
+
+A Dockerfile has been provided for containerized deployment.
+
+Due to development environment restrictions on a managed corporate laptop, the project was developed and validated using a Python virtual environment. The Docker configuration is included to demonstrate containerization for deployment.
+
+---
+
+# MLOps Workflow
+
+1. Train Machine Learning Models
+2. Track Experiments using MLflow
+3. Automate Workflows using Airflow
+4. Build Docker Image
+5. Deploy using Kubernetes
+6. CI/CD using Jenkins
+7. Serve Predictions using Flask
+8. Visualize Results using Streamlit
+
+---
+
+# Future Improvements
+
+- Model Monitoring
+- Automated Retraining
+- User Authentication
+- Cloud Deployment
+- Improved Recommendation Engine
+
+---
+
+# Author
+
+**Yogesh Dubey**
+
+BI Engineer | Data Science & AI Enthusiast
+
+GitHub: https://github.com/Yogesh-46
