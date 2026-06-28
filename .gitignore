@@ -16,3 +16,6 @@ outputs/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+mlruns/
+mlflow.db
